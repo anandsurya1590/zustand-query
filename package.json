@@ -12,7 +12,7 @@
     "caching"
   ],
   "author": "Anand Suryavanshi",
-  "license": "ISC",
+  "license": "MIT",
   "github": {
     "url": "https://github.com/anandsurya1590/zustand-query.git"
   },

@@ -1,4 +1,4 @@
-# zustand-query
+# react-zustand-query
 
 A lightweight React state management library inspired by React Query, built on top of [Zustand](https://github.com/pmndrs/zustand). It provides hooks for data fetching, caching, and mutations with a simple API.
 
@@ -12,13 +12,13 @@ A lightweight React state management library inspired by React Query, built on t
 ## Installation
 
 ```bash
-npm install zustand-query
+npm install react-zustand-query
 ```
 
 or
 
 ```bash
-yarn add zustand-query
+yarn add react-zustand-query
 ```
 
 ## Usage
@@ -26,7 +26,7 @@ yarn add zustand-query
 ### 1. Setup QueryClient
 
 ```typescript
-import { QueryClient } from "zustand-query";
+import { QueryClient } from "react-zustand-query";
 
 const queryClient = new QueryClient();
 ```
@@ -34,7 +34,7 @@ const queryClient = new QueryClient();
 ### 2. useQuery Example
 
 ```typescript
-import { useQuery } from "zustand-query";
+import { useQuery } from "react-zustand-query";
 
 const { data, isLoading, error } = useQuery("todos", fetchTodos);
 ```
@@ -42,7 +42,7 @@ const { data, isLoading, error } = useQuery("todos", fetchTodos);
 ### 3. useMutation Example
 
 ```typescript
-import { useMutation } from "zustand-query";
+import { useMutation } from "react-zustand-query";
 
 const mutation = useMutation(addTodo);
 ```
