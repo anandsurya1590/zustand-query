@@ -1,4 +1,4 @@
-import { MutationOptions } from "./types";
+import type { MutationOptions } from "./types";
 import { useState } from "react";
 
 export function useMutation<TData, TVariables>({

@@ -1,5 +1,5 @@
 import { useQueryStore } from "./queryClient";
-import { QueryOptions } from "./types";
+import type { QueryOptions } from "./types";
 import { useCallback, useEffect } from "react";
 
 export function useQuery<T>({
