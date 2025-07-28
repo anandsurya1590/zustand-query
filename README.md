@@ -198,3 +198,7 @@ const {
 ## License
 
 MIT
+
+## Important note 
+- This is lib is only working with react+vite project, will soon fix the webpack issue. Happy web development. 
+- If facing any issue while using, feel free to raise issue: https://github.com/anandsurya1590/zustand-query/issues 
