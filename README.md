@@ -2,12 +2,16 @@
 
 A lightweight data fetching and caching library for React, inspired by React Query and built on top of [Zustand](https://github.com/pmndrs/zustand). It provides hooks for data fetching, caching, and mutations with a simple API and full TypeScript support.
 
+For a detailed list of changes and updates, see the [CHANGELOG](./CHANGELOG.md).
+
 ## Features
 
 - Simple and minimal API
-- Query and mutation hooks: `useQuery`, `useMutation`
+- Query and mutation hooks: `useQuery`, `useMutation`, `useInfiniteQuery`
+- Automatic retries with exponential backoff
+- Infinite query support for pagination
 - Query client for cache management
-- TypeScript support
+- Full TypeScript support
 
 ## Installation
 
@@ -79,18 +83,117 @@ const { mutate, data, error, isLoading } = useMutation({
 // mutate({ title: "New Todo" });
 ```
 
+### 4. useInfiniteQuery Example
+
+```typescript
+import { useInfiniteQuery } from "react-zustand-query";
+
+function fetchPosts({ pageParam = 0 }) {
+  return fetch(`/api/posts?page=${pageParam}&limit=10`).then((res) =>
+    res.json()
+  );
+}
+
+const {
+  data,
+  isLoading,
+  error,
+  fetchNextPage,
+  hasNextPage,
+  isFetchingNextPage,
+} = useInfiniteQuery({
+  queryKey: ["posts"],
+  queryFn: fetchPosts,
+  getNextPageParam: (lastPage, allPages, lastPageParam) => {
+    // Return null/undefined to indicate no more pages
+    return lastPage.hasMore ? lastPageParam + 1 : null;
+  },
+  initialPageParam: 0,
+});
+
+// Access the data
+const allPosts = data?.pages.flatMap((page) => page.posts) ?? [];
+
+// In your component:
+return (
+  <div>
+    {allPosts.map((post) => (
+      <div key={post.id}>{post.title}</div>
+    ))}
+
+    {hasNextPage && (
+      <button onClick={() => fetchNextPage()} disabled={isFetchingNextPage}>
+        {isFetchingNextPage ? "Loading more..." : "Load More"}
+      </button>
+    )}
+  </div>
+);
+```
+
 ## API Reference
 
-- `useQuery({ queryKey, queryFn, options? })`
-  - `queryKey`: Unique key for the query (string or array)
-  - `queryFn`: Function that returns a promise (fetcher)
-  - `options`: (optional) Additional options (e.g., enabled, refetchInterval)
-- `useMutation(mutationFn, options?)`
-  - `mutationFn`: Function that performs the mutation (returns a promise)
-  - `options`: (optional) Additional options (e.g., onSuccess, onError)
-- `QueryClient`
-  - `.getState(queryKey)`: Get the state of a specific query
-  - `.invalidateQueries(queryKey)`: Invalidate and refetch queries
+### useQuery
+
+```typescript
+const { data, isLoading, error, refetch } = useQuery({
+  queryKey: ["users", userId],
+  queryFn: fetchUser,
+  enabled: boolean,
+  staleTime: number,
+  retry: boolean | number,
+});
+```
+
+- `queryKey`: Unique key for the query (string or array)
+- `queryFn`: Function that returns a promise (fetcher)
+- `enabled`: (optional) Enable/disable the query
+- `staleTime`: (optional) Time in ms before data is considered stale
+- `retry`: (optional) Number of retry attempts or boolean
+
+### useMutation
+
+```typescript
+const { mutate, isLoading, error, data } = useMutation({
+  mutationFn: addTodo,
+  onSuccess?: (data) => void,
+  onError?: (error) => void,
+  retry?: boolean | number
+});
+```
+
+- `mutationFn`: Function that performs the mutation (returns a promise)
+- `onSuccess`: (optional) Callback on successful mutation
+- `onError`: (optional) Callback on mutation error
+- `retry`: (optional) Number of retry attempts or boolean
+
+### useInfiniteQuery
+
+```typescript
+const {
+  data,
+  isLoading,
+  error,
+  fetchNextPage,
+  hasNextPage,
+  isFetchingNextPage,
+} = useInfiniteQuery({
+  queryKey: ["posts"],
+  queryFn: fetchPostPage,
+  getNextPageParam: (lastPage, allPages, lastPageParam) => lastPage.nextCursor,
+  initialPageParam: 0,
+});
+```
+
+- `queryKey`: Unique key for the query
+- `queryFn`: Function that fetches a page of data
+- `getNextPageParam`: (optional) Function to determine the next page parameter
+- `initialPageParam`: (optional) Initial page parameter value
+- Returns paginated data and utilities for infinite scrolling
+
+### QueryClient
+
+- `.getState(queryKey)`: Get the state of a specific query
+- `.invalidateQueries(queryKey)`: Invalidate and refetch queries
 
 ## License
 
