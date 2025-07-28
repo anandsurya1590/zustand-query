@@ -1,6 +1,6 @@
 {
-  "name": "@anand-surya/zustand-query",
-  "version": "1.0.6",
+  "name": "@anand1590/zustand-query",
+  "version": "1.0.7",
   "description": "This is the data fetching and caching library with zustand",
   "main": "src/index.ts",
   "keywords": [
