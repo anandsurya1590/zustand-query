@@ -4,6 +4,8 @@ A lightweight data fetching and caching library for React, inspired by React Que
 
 For a detailed list of changes and updates, see the [CHANGELOG](./CHANGELOG.md).
 
+### <a href="https://zustand-query.vercel.app">Read the docs →</b></a>
+
 ## Features
 
 - Simple and minimal API
@@ -199,6 +201,7 @@ const {
 
 MIT
 
-## Important note 
-- This is lib is only working with react+vite project, will soon fix the webpack issue. Happy web development. 
-- If facing any issue while using, feel free to raise issue: https://github.com/anandsurya1590/zustand-query/issues 
+## Important note
+
+- This is lib is only working with react+vite project, will soon fix the webpack issue. Happy web development.
+- If facing any issue while using, feel free to raise issue: https://github.com/anandsurya1590/zustand-query/issues
