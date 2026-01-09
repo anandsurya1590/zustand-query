@@ -39,7 +39,6 @@ jobs:
           cache: "npm"
 
       - name: Bump version (optional)
-        if: github.event_name == 'workflow_dispatch' && env.BUMP != 'none'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
