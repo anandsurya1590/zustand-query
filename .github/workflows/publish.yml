@@ -20,6 +20,8 @@ jobs:
     name: Publish
     if: ${{ github.event_name == 'release' || (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')) || github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main') }}
     runs-on: ubuntu-latest
+    env:
+      BUMP: ${{ github.event.inputs.bump || 'patch' }}
     permissions:
       contents: write
 
@@ -37,15 +39,23 @@ jobs:
           cache: "npm"
 
       - name: Bump version (optional)
-        if: github.event_name == 'workflow_dispatch' && github.event.inputs.bump != 'none'
+        if: github.event_name == 'workflow_dispatch' && env.BUMP != 'none'
         env:
-          GITHUB_TOKEN: ${{ secrets.CONFIG_GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "Running version bump: ${{ github.event.inputs.bump }}"
+          echo "Resolved bump: '$BUMP'"
+          # still accept explicit inputs or fallbacks; BUMP comes from the job env which defaults to 'patch'
+          if [ "$BUMP" = "none" ]; then
+            echo "bump set to 'none', skipping version bump"
+            exit 0
+          fi
+          echo "Running version bump: $BUMP"
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          # Ensure push uses the provided GITHUB_TOKEN
+          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
           # npm version will create a commit and tag; include [skip ci] to avoid re-running workflows
-          npm version ${{ github.event.inputs.bump }} -m "chore(release): %s [skip ci]"
+          npm version "$BUMP" -m "chore(release): %s [skip ci]"
           git push --follow-tags origin HEAD
 
       - name: Install dependencies
